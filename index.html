@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Presidential Election Winner 2024</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+    />
+    <style>
+      body {
+        font-family: "Helvetica Neue", Arial, sans-serif;
+        background-color: #f4f4f4;
+        color: #333;
+        margin: 0;
+        padding: 20px;
+      }
+      .container {
+        max-width: 800px;
+        margin: auto;
+        background: white;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      }
+      h1 {
+        text-align: center;
+        color: #2c3e50;
+        font-size: 2.5em;
+        margin-bottom: 20px;
+      }
+      .market {
+        margin-bottom: 30px;
+        padding: 20px;
+        border: 1px solid #e0e0e0;
+        border-radius: 10px;
+        background-color: #fafafa;
+      }
+      .market img {
+        max-width: 100%;
+        border-radius: 10px;
+      }
+      .outcomes {
+        list-style: none;
+        padding: 0;
+      }
+      .outcomes li {
+        padding: 12px;
+        border-bottom: 1px solid #e0e0e0;
+        font-size: 1.2em;
+      }
+      .outcomes li:last-child {
+        border-bottom: none;
+      }
+      .rewards {
+        margin-top: 20px;
+        padding: 15px;
+        background-color: #f9f9f9;
+        border-radius: 10px;
+      }
+      .rewards div {
+        margin-bottom: 15px;
+        font-size: 1.1em;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Presidential Election Winner 2024</h1>
+      <div id="marketData"></div>
+    </div>
+    <script>
+      fetch(
+        "https://clob.polymarket.com/rewards/markets/0xdd22472e552920b8438158ea7238bfadfa4f736aa4cee91a6b86c39ead110917"
+      )
+        .then((response) => response.json())
+        .then((data) => {
+          const market = data.data[0];
+          const marketContainer = document.getElementById("marketData");
+          const outcomes = market.tokens
+            .map((token) => `<li>${token.outcome}: ${token.price}%</li>`)
+            .join("");
+          const rewards = market.rewards_config
+            .map(
+              (reward) => `
+                            <div>
+                                <strong>Asset Address:</strong> ${reward.asset_address}<br>
+                                <strong>Start Date:</strong> ${reward.start_date}<br>
+                                <strong>End Date:</strong> ${reward.end_date}<br>
+                                <strong>Rate per Day:</strong> ${reward.rate_per_day}<br>
+                                <strong>Total Rewards:</strong> ${reward.total_rewards}<br>
+                                <strong>Total Days:</strong> ${reward.total_days}<br>
+                            </div>
+                        `
+            )
+            .join("");
+
+          marketContainer.innerHTML = `
+                    <div class="market">
+                        <h2>${market.question}</h2>
+                        <img src="${market.image}" alt="Market Image">
+                        <h3>Outcomes:</h3>
+                        <ul class="outcomes">${outcomes}</ul>
+                        <div class="rewards">
+                            <h3>Rewards Config:</h3>
+                            ${rewards}
+                        </div>
+                    </div>
+                `;
+        })
+        .catch((error) => {
+          console.error("Error fetching data:", error);
+        });
+    </script>
+  </body>
+</html>
